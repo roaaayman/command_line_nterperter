@@ -99,10 +99,10 @@ public class Terminal {
             if (args[i].length() == 0) {
                 System.out.println("Please enter a valid directory name or path.");
             } else {
-                File newDirectory = new File(args[i]);
+                File newdir = new File(curr,args[i]);
 
-                if (!newDirectory.exists()) {
-                    newDirectory.mkdir();
+                if (!newdir.exists()) {
+                    newdir.mkdir();
                     System.out.println(args[i] + " directory has been created.");
                 } else {
                     System.out.println(args[i] + " directory already exists.");
