@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -47,8 +48,11 @@ public class Terminal {
 
     //Implement each command in a method, for example:
     public String pwd(){
-        Path curr=Paths.get("").toAbsolutePath();
-        return curr.toString();
+        try {
+            return curr.getCanonicalPath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
     public void ls(){
@@ -113,8 +117,8 @@ public class Terminal {
         {
             curr=new File(".");
         } else if (args.length==1) {
-            String targetDirectory = args[0];
-            File newDirectory = new File(curr, targetDirectory);
+
+            File newDirectory = new File(curr, args[0]);
 
             if (newDirectory.isDirectory()) {
                 curr = newDirectory;
