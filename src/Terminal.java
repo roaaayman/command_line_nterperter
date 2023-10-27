@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 class Parser {
    int j;
+   int roaa;
     String commandName; //store the name of the command entered by the user
     String[] args; // store any arguments provided by the command
     //This method takes the user's input as a string and parses it to extract the command name and any arguments.
