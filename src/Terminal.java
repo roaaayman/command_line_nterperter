@@ -4,7 +4,7 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 class Parser {
-    int i;
+   int j;
     String commandName; //store the name of the command entered by the user
     String[] args; // store any arguments provided by the command
     //This method takes the user's input as a string and parses it to extract the command name and any arguments.
