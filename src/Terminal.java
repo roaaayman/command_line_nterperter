@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.Scanner;
 
 class Parser {
@@ -192,7 +191,7 @@ public class Terminal {
         Terminal T= new Terminal();
         Scanner s=new Scanner(System.in);
         while (true) {
-            System.out.print("$ ");
+            System.out.print(">");
             String input = s.nextLine();
 
             if (input.equals("exit")) {
