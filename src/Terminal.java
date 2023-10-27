@@ -39,9 +39,11 @@ class Parser {
 public class Terminal {
 
     Parser parser;
+    File curr;
     public Terminal()
     {
         parser=new Parser();
+        curr=new File(".");
     }
 
     //Implement each command in a method, for example:
@@ -51,7 +53,6 @@ public class Terminal {
 
     }
     public void ls(){
-        File curr=new File(".");
         File[] files=curr.listFiles();
         for(int i=0;i< files.length;i++)
         {
@@ -78,21 +79,12 @@ public class Terminal {
     }
     public void rm(String[] args)
     {
-        for(int i=0;i< args.length;i++)
-        {
-            File curr=new File(args[i]);
-            if(curr.exists()) {
-                File[] files=curr.listFiles();
-                if(files!=null) {
-                    for (int j = 0; j < files.length; j++) {
-
-                        files[j].delete();
-
-                    }
-                }
-                curr.delete();
-            }
-        }
+       String filename=args[0];
+       File file= new File(curr,filename);
+       if(file.exists() && file.isFile())
+       {
+           file.delete();
+       }
     }
     public void mkdir(String[] args) {
         if (args == null || args.length == 0) {
@@ -115,9 +107,32 @@ public class Terminal {
             }
         }
     }
-    public void cd()
+
+    public void cd(String[] args)
     {
-        Path curr= Paths.get("").toAbsolutePath();
+        if(args.length==0)
+        {
+            curr=new File(".");
+        } else if (args.length==1) {
+            String targetDirectory = args[0];
+            File newDirectory = new File(curr, targetDirectory);
+
+            if (newDirectory.isDirectory()) {
+                curr = newDirectory;
+            }
+
+        }
+        else if (args[0].equals("..")) {
+
+            File previousDirectory = curr.getParentFile();
+
+            if (previousDirectory.isDirectory()) {
+                curr = previousDirectory;
+            }
+
+        }
+
+
     }
 
 
@@ -151,8 +166,9 @@ public class Terminal {
             mkdir(args);
 
         }
+
         else if (cmd.equals("cd")){
-            cd();
+            cd(args);
 
         }
 
@@ -165,12 +181,23 @@ public class Terminal {
     public static void main(String[] args){
         Terminal T= new Terminal();
         Scanner s=new Scanner(System.in);
-        String input= s.nextLine();
+        while (true) {
+            System.out.print("$ ");
+            String input = s.nextLine();
 
-        if (T.parser.parse(input)) {
-            T.chooseCommandAction();
+            if (input.equals("exit")) {
+                break;
+            }
+
+            if (T.parser.parse(input)) {
+                T.chooseCommandAction();
+            } else {
+                System.out.println("Invalid input.");
+            }
         }
+
+        System.out.println("Exiting CLI.");
+    }
 
 
     }
-}
