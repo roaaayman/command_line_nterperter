@@ -114,6 +114,10 @@ public class Terminal {
             }
         }
     }
+    public void cd()
+    {
+        Path curr= Paths.get("").toAbsolutePath();
+    }
 
 
 // ...
@@ -144,6 +148,10 @@ public class Terminal {
         }
         else if (cmd.equals("mkdir")){
             mkdir(args);
+
+        }
+        else if (cmd.equals("cd")){
+            cd();
 
         }
 
