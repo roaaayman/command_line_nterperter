@@ -10,23 +10,29 @@ class Parser {
     String[] args; // store any arguments provided by the command
     //This method takes the user's input as a string and parses it to extract the command name and any arguments.
     //It should return true if parsing is successful and false otherwise.
-    public boolean parse(String input){
-        String[] instring=input.split(" ",2);
-        if(instring.length<1)
-        {
+    public boolean parse(String input) {
+        String[] instring = input.split(" ", 2);
+        if (instring.length < 1) {
             return false;
         }
-        commandName=instring[0];
-        if(instring.length>1)
-        {
-            args= instring[1].split(" ");
-        }
-        else {
-            args= new String[0];
-        }
-        return true;
 
+        commandName = instring[0];
+
+        if (instring.length > 1) {
+
+            if (commandName.equals("ls") && instring[1].equals("-r")) {
+                commandName += " -r";
+            } else {
+                args = instring[1].split(" ");
+            }
+        } else {
+            args = new String[0];
+        }
+
+        return true;
     }
+
+
     //This method returns the parsed command name.
     public String getCommandName(){
         return commandName;
@@ -59,19 +65,18 @@ public class Terminal {
         File[] files=curr.listFiles();
         for(int i=0;i< files.length;i++)
         {
-
-            System.out.println(files[i].getName());
+            System.out.print(files[i].getName() + " " );
         }
 
     }
     public void ls_r(){
-        File curr=new File(".");
-        File[] files=curr.listFiles();
-        for(int i= files.length-1;i>=0;i--)
-        {
-            System.out.println(files[i].getName());
-        }
 
+        File[] files=curr.listFiles();
+        if(files!=null) {
+            for (int i = files.length-1; i >= 0; i--) {
+                System.out.print(files[i].getName()+" ");
+            }
+        }
     }
     public void echo(String[] args)
     {
@@ -151,10 +156,12 @@ public class Terminal {
         }
         else if (cmd.equals("ls")){
             ls();
+            System.out.println("");
 
         }
         else if (cmd.equals("ls -r")){
             ls_r();
+            System.out.println("");
 
         }
         else if (cmd.equals("echo")){
