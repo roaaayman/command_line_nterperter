@@ -114,6 +114,47 @@ public class Terminal {
             }
         }
     }
+    public void rmdir(String[] args) {
+
+        if ( args[0].equals("*")) {
+            File[] subs= curr.listFiles(File::isDirectory);
+           for (int i=0;i< subs.length;i++)
+           {
+               if(subs[i].list().length==0)
+               {
+                   subs[i].delete();
+               }
+               else
+               {
+                   System.out.println("rmdir: failed to remove directories");
+               }
+           }
+        }
+        else {
+
+            for (int i = 0; i < args.length; i++) {
+
+                    String filename = args[0];
+                    File directory = new File(curr, filename);
+                    if (directory.exists() && directory.isDirectory()) {
+                        if(directory.list().length==0)
+                        {
+                            directory.delete();
+                        }
+                        else {
+                            System.out.println("rmdir: failed to remove '"+args[0]+"': Directory not empty");
+                        }
+
+                    }
+                    else {
+                        System.out.println("rmdir: failed to remove '"+args[0]+"': Directory does not exist");
+
+                    }
+
+
+            }
+        }
+    }
 
     public void cd(String[] args)
     {
@@ -180,11 +221,16 @@ public class Terminal {
             cd(args);
 
         }
+        else if (cmd.equals("rmdir")){
+            rmdir(args);
+
+        }
 
         else
         {
             System.out.println("not recognized");
         }
+
 
     }
     public static void main(String[] args){
