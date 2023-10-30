@@ -23,7 +23,9 @@ class Parser {
         if (instring.length > 1) {
 
             if (commandName.equals("ls") && instring[1].equals("-r")) {
-                commandName += " -r";
+                commandName += " -r";}
+            if (commandName.equals("cp") && instring[1].equals("-r")) {
+                    commandName += " -r";
             } else {
                 args = instring[1].split(" ");
             }
@@ -276,6 +278,52 @@ public class Terminal {
             }
         }
     }
+    public void cp_r(String[] args) {
+        if (args.length != 2) {
+            System.out.println("Usage: cp -r <source_directory> <destination_directory>");
+            return;
+        }
+
+        String sourceDirectoryName = args[0];
+        String destinationDirectoryName = args[1];
+
+        File sourceDirectory = new File(curr, sourceDirectoryName);
+        File destinationDirectory = new File(curr, destinationDirectoryName);
+
+        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
+            System.out.println("cp -r: Source directory does not exist or is not a directory.");
+            return;
+        }
+
+        if (destinationDirectory.exists() && !destinationDirectory.isDirectory()) {
+            System.out.println("cp -r: Destination exists but is not a directory.");
+            return;
+        }
+
+        copyDirectory(sourceDirectory, destinationDirectory);
+        System.out.println("Directory copied successfully.");
+    }
+
+    private void copyDirectory(File source, File destination) {
+        if (source.isDirectory()) {
+            if (!destination.exists()) {
+                destination.mkdir();
+            }
+
+            String[] files = source.list();
+            for (String file : files) {
+                File srcFile = new File(source, file);
+                File destFile = new File(destination, file);
+                copyDirectory(srcFile, destFile);
+            }
+        } else {
+            try {
+                Files.copy(source.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                System.out.println("cp -r: An error occurred while copying " + source);
+            }
+        }
+    }
 
 
 
@@ -324,6 +372,9 @@ public class Terminal {
 
         } else if (cmd.equals("cp")) {
             cp(args);
+        }
+        else if (cmd.equals("cp -r")) {
+            cp_r(args);
         }
         else
         {
