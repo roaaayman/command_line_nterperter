@@ -110,7 +110,7 @@ public class Terminal {
 
        }
     }
-    public void cat(String[] args) throws FileNotFoundException, FileNotFoundException {
+    public void cat(String[] args) throws FileNotFoundException {
         if(args.length==1)
         {
             File file=new File(curr,args[0]);
