@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 
 class Parser {
@@ -196,6 +198,34 @@ public class Terminal {
 
 
     }
+    public void cp(String[] args) {
+        if (args.length != 2) {
+            System.out.println("Usage: cp <source_file> <destination_file>");
+            return;
+        }
+
+        String sourceFileName = args[0];
+        String destinationFileName = args[1];
+
+        File sourceFile = new File(curr, sourceFileName);
+        File destinationFile = new File(curr, destinationFileName);
+
+        if (!sourceFile.exists()) {
+            System.out.println("cp: " + sourceFileName + " does not exist.");
+        } else if (!sourceFile.isFile()) {
+            System.out.println("cp: " + sourceFileName + " is not a regular file.");
+        } else if (destinationFile.exists() && destinationFile.isDirectory()) {
+            System.out.println("cp: " + destinationFileName + " is a directory.");
+        } else {
+            try {
+                Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File copied successfully.");
+            } catch (IOException e) {
+                System.out.println("cp: An error occurred while copying the file.");
+            }
+        }
+    }
+
 
 
 // ...
@@ -239,7 +269,9 @@ public class Terminal {
             rmdir(args);
 
         }
-
+        else if (cmd.equals("cp")) {
+            cp(args);
+        }
         else
         {
             System.out.println("not recognized");
