@@ -88,9 +88,23 @@ public class Terminal {
     {
        String filename=args[0];
        File file= new File(curr,filename);
-       if(file.exists() && file.isFile())
+       if(file.exists() )
        {
-           file.delete();
+           if(file.isFile())
+           {
+               file.delete();
+           }
+           else if(file.isDirectory())
+           {
+               System.out.println("rm: cannot remove '"+filename+"': Is a directory");
+
+           }
+
+       }
+       else
+       {
+           System.out.println("rm: cannot remove '"+filename+"': file does not exist");
+
        }
     }
     public void mkdir(String[] args) {
