@@ -1,7 +1,8 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 
 class Parser {
@@ -197,60 +198,40 @@ public class Terminal {
 
 
     }
-    public void cat(String[] args) throws FileNotFoundException {
-        if(args.length==1)
-        {
-            File file=new File(curr,args[0]);
-            if(file.isFile() && file.exists())
-            {
-                Scanner readfile=new Scanner(file);
-                while(readfile.hasNextLine())
-                {
-                    System.out.println((readfile.nextLine()));
-                }
-                readfile.close();
-            }
-            else
-            {
-                System.out.println("File doesn't exist");
-            }
-        } else if (args.length==2) {
-            File file1=new File(curr,args[0]);
-            File file2=new File(curr,args[1]);
-            if(file1.isFile() && file2.isFile() && file1.exists() && file2.exists())
-            {
-                Scanner readfile1=new Scanner(file1);
-                Scanner readfile2=new Scanner(file2);
-                while(readfile1.hasNextLine())
-                {
-                    System.out.println((readfile1.nextLine()));
-                }
-                while(readfile2.hasNextLine())
-                {
-                    System.out.println((readfile2.nextLine()));
-                }
-                readfile1.close();
-                readfile2.close();
-
-            }
-            else
-            {
-                System.out.println("one or both files don't exist");
-            }
-
-
+    public void cp(String[] args) {
+        if (args.length != 2) {
+            System.out.println("Usage: cp <source_file> <destination_file>");
+            return;
         }
-        else
-        {
-            System.out.println("invalid number of arguments enter 1 or 2 arguments");
+
+        String sourceFileName = args[0];
+        String destinationFileName = args[1];
+
+        File sourceFile = new File(curr, sourceFileName);
+        File destinationFile = new File(curr, destinationFileName);
+
+        if (!sourceFile.exists()) {
+            System.out.println("cp: " + sourceFileName + " does not exist.");
+        } else if (!sourceFile.isFile()) {
+            System.out.println("cp: " + sourceFileName + " is not a regular file.");
+        } else if (destinationFile.exists() && destinationFile.isDirectory()) {
+            System.out.println("cp: " + destinationFileName + " is a directory.");
+        } else {
+            try {
+                Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File copied successfully.");
+            } catch (IOException e) {
+                System.out.println("cp: An error occurred while copying the file.");
+            }
         }
     }
+
 
 
 // ...
 
     //This method will choose the suitable command method to be called
-    public void chooseCommandAction() {
+    public void chooseCommandAction(){
         String cmd= parser.getCommandName();
         String[] args = parser.getArgs();
         if(cmd.equals("pwd"))
@@ -270,14 +251,8 @@ public class Terminal {
         else if (cmd.equals("echo")){
             echo(args);
 
-        } else if (cmd.equals("cat")) {
-            try {
-                cat(args);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-        } else if (cmd.equals("rm")){
+        }
+        else if (cmd.equals("rm")){
             rm(args);
 
         }
@@ -294,7 +269,9 @@ public class Terminal {
             rmdir(args);
 
         }
-
+        else if (cmd.equals("cp")) {
+            cp(args);
+        }
         else
         {
             System.out.println("not recognized");
@@ -302,7 +279,7 @@ public class Terminal {
 
 
     }
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Terminal T= new Terminal();
         Scanner s=new Scanner(System.in);
         while (true) {
