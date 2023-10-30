@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.nio.file.Files;
@@ -109,6 +110,56 @@ public class Terminal {
 
        }
     }
+    public void cat(String[] args) throws FileNotFoundException, FileNotFoundException {
+        if(args.length==1)
+        {
+            File file=new File(curr,args[0]);
+            if(file.isFile() && file.exists())
+            {
+                Scanner readfile=new Scanner(file);
+                while(readfile.hasNextLine())
+                {
+                    System.out.println((readfile.nextLine()));
+                }
+                readfile.close();
+            }
+            else
+            {
+                System.out.println("File doesn't exist");
+            }
+        } else if (args.length==2) {
+            File file1=new File(curr,args[0]);
+            File file2=new File(curr,args[1]);
+            if(file1.isFile() && file2.isFile() && file1.exists() && file2.exists())
+            {
+                Scanner readfile1=new Scanner(file1);
+                Scanner readfile2=new Scanner(file2);
+                while(readfile1.hasNextLine())
+                {
+                    System.out.println((readfile1.nextLine()));
+                }
+                while(readfile2.hasNextLine())
+                {
+                    System.out.println((readfile2.nextLine()));
+                }
+                readfile1.close();
+                readfile2.close();
+
+            }
+            else
+            {
+                System.out.println("one or both files don't exist");
+            }
+
+
+        }
+        else
+        {
+            System.out.println("invalid number of arguments enter 1 or 2 arguments");
+        }
+    }
+
+
     public void mkdir(String[] args) {
         if (args == null || args.length == 0) {
             System.out.println("Please enter at least one directory name or path.");
@@ -231,7 +282,7 @@ public class Terminal {
 // ...
 
     //This method will choose the suitable command method to be called
-    public void chooseCommandAction(){
+    public void chooseCommandAction() throws FileNotFoundException {
         String cmd= parser.getCommandName();
         String[] args = parser.getArgs();
         if(cmd.equals("pwd"))
@@ -268,8 +319,10 @@ public class Terminal {
         else if (cmd.equals("rmdir")){
             rmdir(args);
 
-        }
-        else if (cmd.equals("cp")) {
+        } else if (cmd.equals("cat")) {
+            cat(args);
+
+        } else if (cmd.equals("cp")) {
             cp(args);
         }
         else
@@ -279,7 +332,7 @@ public class Terminal {
 
 
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
         Terminal T= new Terminal();
         Scanner s=new Scanner(System.in);
         while (true) {
