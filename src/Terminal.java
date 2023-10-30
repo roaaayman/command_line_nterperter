@@ -23,10 +23,9 @@ class Parser {
         if (instring.length > 1) {
 
             if (commandName.equals("ls") && instring[1].equals("-r")) {
-                commandName += " -r";}
-            if (commandName.equals("cp") && instring[1].equals("-r")) {
-                    commandName += " -r";
-            } else {
+                commandName += " -r";
+            }
+            else {
                 args = instring[1].split(" ");
             }
         } else {
@@ -35,6 +34,7 @@ class Parser {
 
         return true;
     }
+
 
 
     //This method returns the parsed command name.
@@ -252,23 +252,27 @@ public class Terminal {
 
     }
     public void cp(String[] args) {
-        if (args.length != 2) {
-            System.out.println("Usage: cp <source_file> <destination_file>");
-            return;
+      ;
+        if (args.length !=2) {
+            if(args[0].equals("-r"))
+            {
+                args = new String[]{args[1], args[2]};
+                cp_r(args);
+            }
+            else {
+                System.out.println("Usage: cp <source_file> <destination_file>");
+            }     return;
         }
 
-        String sourceFileName = args[0];
-        String destinationFileName = args[1];
-
-        File sourceFile = new File(curr, sourceFileName);
-        File destinationFile = new File(curr, destinationFileName);
+        File sourceFile = new File(curr, args[0]);
+        File destinationFile = new File(curr, args[1]);
 
         if (!sourceFile.exists()) {
-            System.out.println("cp: " + sourceFileName + " does not exist.");
+            System.out.println("cp: " + args[0] + " does not exist.");
         } else if (!sourceFile.isFile()) {
-            System.out.println("cp: " + sourceFileName + " is not a regular file.");
+            System.out.println("cp: " + args[0] + " is not a regular file.");
         } else if (destinationFile.exists() && destinationFile.isDirectory()) {
-            System.out.println("cp: " + destinationFileName + " is a directory.");
+            System.out.println("cp: " + args[1] + " is a directory.");
         } else {
             try {
                 Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -284,11 +288,8 @@ public class Terminal {
             return;
         }
 
-        String sourceDirectoryName = args[0];
-        String destinationDirectoryName = args[1];
-
-        File sourceDirectory = new File(curr, sourceDirectoryName);
-        File destinationDirectory = new File(curr, destinationDirectoryName);
+        File sourceDirectory = new File(curr, args[0]);
+        File destinationDirectory = new File(curr, args[1]);
 
         if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
             System.out.println("cp -r: Source directory does not exist or is not a directory.");
