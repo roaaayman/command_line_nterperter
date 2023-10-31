@@ -1,9 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Parser {
@@ -47,6 +48,7 @@ class Parser {
     }
 }
 public class Terminal {
+    private List<String> commandHistory = new ArrayList<>();
 
     Parser parser;
     File curr;
@@ -325,6 +327,34 @@ public class Terminal {
             }
         }
     }
+    public void touch(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: touch <file_path>");
+            return;
+        }
+
+        String filePath = args[0];
+        File fileToCreate = new File(curr, filePath);
+
+        try {
+            if (fileToCreate.createNewFile()) {
+                System.out.println("File created: " + filePath);
+            } else {
+                System.out.println("File already exists: " + filePath);
+            }
+        } catch (IOException e) {
+            System.err.println("Error creating the file: " + e.getMessage());
+        }
+    }
+
+
+    public void history() {
+
+        for (int i = 0; i < commandHistory.size(); i++) {
+            System.out.println((i + 1) + " " + commandHistory.get(i));
+        }
+    }
+
 
 
 
@@ -334,6 +364,7 @@ public class Terminal {
     public void chooseCommandAction() throws FileNotFoundException {
         String cmd= parser.getCommandName();
         String[] args = parser.getArgs();
+        commandHistory.add(cmd);
         if(cmd.equals("pwd"))
         {
             System.out.println(pwd());
@@ -350,6 +381,14 @@ public class Terminal {
         }
         else if (cmd.equals("echo")){
             echo(args);
+
+        }
+        else if (cmd.equals("touch")){
+            touch(args);
+
+        }
+        else if (cmd.equals("history")){
+            history();
 
         }
         else if (cmd.equals("rm")){
