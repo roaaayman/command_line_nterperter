@@ -1,10 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -326,16 +323,19 @@ public class Terminal {
         }
 
         String filePath = args[0];
-        File fileToCreate = new File(curr, filePath);
+        Path fileToCreate = Paths.get(curr.toString(), filePath);
 
         try {
-            if (fileToCreate.createNewFile()) {
+            if (!Files.exists(fileToCreate)) {
+                Files.createFile(fileToCreate);
                 System.out.println("File created: " + filePath);
             } else {
                 System.out.println("File already exists: " + filePath);
             }
         } catch (IOException e) {
             System.err.println("Error creating the file: " + e.getMessage());
+        } catch (InvalidPathException e) {
+            System.err.println("Invalid path: " + e.getMessage());
         }
     }
 
