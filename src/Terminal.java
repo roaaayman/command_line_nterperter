@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -227,32 +229,22 @@ public class Terminal {
         }
     }
 
-    public void cd(String[] args)
-    {
-        if(args.length==0)
-        {
-            curr=new File(".");
-        } else if (args.length==1) {
-
-            File newDirectory = new File(curr, args[0]);
-
-            if (newDirectory.isDirectory()) {
-                curr = newDirectory;
+    public void cd(String[] args) {
+        if (args.length == 0) {
+            curr = new File(".").toPath().toAbsolutePath().normalize().toFile();
+        } else if (args.length == 1) {
+            Path newDirectory = Paths.get(args[0]);
+            if (Files.isDirectory(newDirectory)) {
+                curr = newDirectory.toFile();
             }
-
-        }
-        else if (args[0].equals("..")) {
-
-            File previousDirectory = curr.getParentFile();
-
-            if (previousDirectory.isDirectory()) {
-                curr = previousDirectory;
+        } else if (args[0].equals("..")) {
+            File parentDirectory = curr.getParentFile();
+            if (parentDirectory != null && parentDirectory.isDirectory()) {
+                curr = parentDirectory;
             }
-
         }
-
-
     }
+
     public void cp(String[] args) {
       ;
         if (args.length !=2) {
