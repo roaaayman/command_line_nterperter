@@ -176,13 +176,20 @@ public class Terminal {
             if (args[i].length() == 0) {
                 System.out.println("Please enter a valid directory name or path.");
             } else {
-                File newdir = new File(curr,args[i]);
+                File newdir;
 
-                if (!newdir.exists()) {
-                    newdir.mkdir();
-                    System.out.println(args[i] + " directory has been created.");
+                if (Paths.get(args[i]).isAbsolute()) {
+                    newdir=new File(args[i]);
                 } else {
-                    System.out.println(args[i] + " directory already exists.");
+                    newdir=new File(curr,args[i]);
+                }
+                if(!newdir.exists())
+                {
+                    newdir.mkdirs();
+                    System.out.println(newdir.getName() + " directory has been created.");
+                }
+                else {
+                    System.out.println(newdir.getName() + " directory already exists.");
                 }
             }
         }
@@ -196,31 +203,41 @@ public class Terminal {
                if(subs[i].list().length==0)
                {
                    subs[i].delete();
+                   System.out.println(subs[i].getName() + " directory has been removed.");
                }
                else
                {
-                   System.out.println("rmdir: failed to remove directories");
+                   System.out.println("rmdir: failed to remove " + subs[i].getName() + ": Directory not empty");
                }
            }
         }
         else {
 
             for (int i = 0; i < args.length; i++) {
-
+                    File directory;
                     String filename = args[0];
-                    File directory = new File(curr, filename);
+                    if(Paths.get(args[i]).isAbsolute())
+                    {
+                         directory = new File(filename);
+                    }
+                    else
+                    {
+                         directory = new File(curr, filename);
+                    }
+
                     if (directory.exists() && directory.isDirectory()) {
                         if(directory.list().length==0)
                         {
                             directory.delete();
+                            System.out.println("rmdir: "+directory.getName()+" Directory removed");
                         }
                         else {
-                            System.out.println("rmdir: failed to remove '"+args[0]+"': Directory not empty");
+                            System.out.println("rmdir: failed to remove '"+directory.getName()+"': Directory not empty");
                         }
 
                     }
                     else {
-                        System.out.println("rmdir: failed to remove '"+args[0]+"': Directory does not exist");
+                        System.out.println("rmdir: failed to remove '"+directory.getName()+"': Directory does not exist");
 
                     }
 
@@ -326,13 +343,21 @@ public class Terminal {
         }
 
         String filePath = args[0];
-        File fileToCreate = new File(curr, filePath);
+        File fileToCreate ;
+        if(Paths.get(args[0]).isAbsolute())
+        {
+            fileToCreate=new File(args[0]);
+        }
+        else
+        {
+            fileToCreate=new File(args[0]);
+        }
 
         try {
             if (fileToCreate.createNewFile()) {
-                System.out.println("File created: " + filePath);
+                System.out.println("File created: " + fileToCreate.getName());
             } else {
-                System.out.println("File already exists: " + filePath);
+                System.out.println("File already exists: " + fileToCreate.getName());
             }
         } catch (IOException e) {
             System.err.println("Error creating the file: " + e.getMessage());
